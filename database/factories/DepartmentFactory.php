@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Department;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DepartmentFactory extends Factory
@@ -22,7 +23,8 @@ class DepartmentFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->unique()->words(1, true)
+            'title'      => $this->faker->unique()->words(3, true),
+            'manager_id' => null,
         ];
     }
 }

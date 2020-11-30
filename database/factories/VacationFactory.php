@@ -22,8 +22,8 @@ class VacationFactory extends Factory
     public function definition()
     {
         return [
-            'from' => $this->faker->dateTimeBetween('now', '+5 days'),
-            'to'   => $this->faker->dateTimeBetween('+6 days', '+15 days'),
+            'from'    => $this->faker->dateTimeBetween('now', '+5 days'),
+            'to'      => $this->faker->dateTimeBetween('+6 days', '+15 days'),
         ];
     }
 }
