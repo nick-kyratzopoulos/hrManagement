@@ -65,7 +65,7 @@ class UsersTest extends TestCase
         $data       = compact('first_name', 'last_name', 'email', 'password');
         $response   = $this->json('POST', '/api/users', $data);
 
-        $response->assertStatus(200)->assertJson(['user' => []]);
+        $response->assertStatus(201)->assertJson(['user' => []]);
 
         $this->assertDatabaseHas('users', Arr::except($data, ['password']));
     }
@@ -78,6 +78,6 @@ class UsersTest extends TestCase
         $data     = [];
         $response = $this->json('POST', '/api/users', $data);
 
-        $response->assertStatus(422);
+        $response->assertStatus(400);
     }
 }

@@ -26,7 +26,7 @@ class UsersVacationsController extends Controller
             $user = User::with('vacations')->find($id);
 
             if ($user) {
-                return response()->json(['user' => $user, 'vacations' => $user->vacations], 200);
+                return response()->json(['user' => $user, 'vacations' => $user->vacations], 201);
             }
         }
 

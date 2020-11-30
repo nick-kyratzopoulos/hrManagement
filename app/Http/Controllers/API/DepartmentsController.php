@@ -54,11 +54,11 @@ class DepartmentsController extends Controller
      * Update a department
      *
      * @param Department    $department
-     * @param UpdateRequest $request
+     * @param DepartmentsUpdateRequest $request
      *
      * @return \Illuminate\Http\JsonResponse]
      */
-    public function update(Department $department, UpdateRequest $request) {
+    public function update(Department $department, DepartmentsUpdateRequest $request) {
         $department->update($request->only('title'));
 
         return response()->json(null, 204);
