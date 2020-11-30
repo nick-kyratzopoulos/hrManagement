@@ -21,8 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->unsignedBigInteger('department_id')->nullable();
             $table->foreign('department_id')->references('id')->on('departments');
-            $table->unsignedBigInteger('manager_at_department_id')->nullable();
-            $table->foreign('manager_at_department_id')->references('id')->on('departments');
             $table->rememberToken();
             $table->timestamps();
         });
