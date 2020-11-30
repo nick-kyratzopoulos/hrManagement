@@ -20,15 +20,15 @@ use \App\Http\Controllers\API\DepartmentsUsersController;
 |
 */
 
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
 Route::put('/departments/addUsers', [DepartmentsUsersController::class, 'addUsersToDepartment']);
 Route::put('/departments/removeUsers', [DepartmentsUsersController::class, 'removeUsersFromDepartment']);
 Route::put('/departments/{id}/removeAllUsers', [DepartmentsUsersController::class, 'removeAllUsersFromDepartment']);
 Route::put('/departments/managers/{user_id}', [DepartmentsController::class, 'addManager']);
-Route::apiResource('/users', UsersController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
-Route::apiResource('/skills', SkillsController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+Route::apiResource('users', UsersController::class);
+Route::apiResource('skills', SkillsController::class);
 Route::apiResource('/users/{id}/skills', UsersSkillsController::class, ['only' => ['index', 'store']]);
-Route::apiResource('/users/{id}/vacations', UsersVacationsController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
-Route::apiResource('/departments', DepartmentsController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
-Route::fallback(function () {
-    return response()->json(['error' => 'Not Found!'], 404);
-});
+Route::apiResource('/users/{id}/vacations', UsersVacationsController::class);
+Route::apiResource('/departments', DepartmentsController::class);

@@ -26,22 +26,14 @@ class UsersController extends Controller
     /**
      * Get a single user
      *
-     * @param int $id
+     * @param User $user
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $user = User::find($id);
+    public function show(User $user) {
+        $user = new UserResource($user);
 
-            if ($user) {
-                return response()->json(compact('user'), 200);
-            }
-        }
-
-        return response()->json('User not found!', 404);
+        return response()->json(compact('user'));
     }
 
     /**
@@ -54,58 +46,34 @@ class UsersController extends Controller
     public function store(UsersStoreRequest $request) {
         $user = User::create($request->only('first_name', 'last_name', 'email', 'password'));
 
-        if ($user) {
-            return response()->json(compact('user'), 200);
-        }
-        
-        return response()->json('User not created!', 404);
+        return response()->json(compact('user'), 201);
     }
 
     /**
      * Update a specific user
      *
      * @param UsersUpdateRequest $request
-     * @param int                $id
+     * @param User    $user
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UsersUpdateRequest $request, $id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $user = User::find($id);
+    public function update(UsersUpdateRequest $request, User $user) {
+        $user->update($request->only('first_name', 'last_name', 'email'));
 
-            if ($user) {
-                $user->update($request->only('first_name', 'last_name', 'email'));
-
-                return response()->json(compact('user'), 200);
-            }
-        }
-
-        return response()->json('User not found, unable to be updated!', 404);
+        return response()->json(null, 204);
     }
 
     /**
      * Delete a specific user
      *
-     * @param int $id
+     * @param User $user
      *
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function destroy($id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $user = User::find($id);
+    public function destroy(User $user) {
+        $user->delete();
 
-            if ($user) {
-                $user->delete();
-            
-                return response()->json('User deleted!', 200);
-            }
-        }
-        
-        return response()->json('User not found, unable to be deleted!', 404);
+        return response()->json(null, 204);
     }
 }

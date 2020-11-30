@@ -17,7 +17,7 @@ class CreateVacationsTable extends Migration
             $table->id();
             $table->date('from');
             $table->date('to');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });

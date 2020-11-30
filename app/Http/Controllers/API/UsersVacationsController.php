@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\VacationResource;
 use App\Http\Requests\User\UsersVacationsStoreRequest;
 use App\Http\Requests\User\UsersVacationsUpdateRequest;
 use App\Models\User;
@@ -48,7 +49,7 @@ class UsersVacationsController extends Controller
             $user = User::with('vacations')->find($user_id);
 
             if ($user) {
-                $vacation = Vacation::find($vacation_id);
+                $vacation = new VacationResource(Vacation::find($vacation_id));
                 
                 if ($vacation) {
                     if ((int)$vacation->user->id === (int)$user_id) {

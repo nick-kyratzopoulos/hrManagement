@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Requests\Department\DepartmentsStoreRequest;
 use App\Http\Requests\Department\DepartmentsUpdateRequest;
 use App\Http\Requests\Department\DepartmentsManagersUpdateRequest;
@@ -18,31 +19,22 @@ class DepartmentsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index() {
-        $departments = Department::all();
-        $count = count($departments);
+        $departments = DepartmentResource::collection(Department::all());
 
-        return response()->json(compact('departments', 'count'), 200);
+        return response()->json(compact('departments'), 200);
     }
 
     /**
-     * Get a single department
+     * Show a department's details
      *
-     * @param int $id
+     * @param Department $department
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id) {
-        $id = (int)$id;
+    public function show(Department $department) {
+        $department = new DepartmentResource($department);
 
-        if ($id > 0) {
-            $department = Department::find($id);
-
-            if ($department) {
-                return response()->json(compact('department'), 200);
-            }
-        }
-
-        return response()->json('Department not found!', 404);
+        return response()->json(compact('department'), 200);
     }
 
     /**
@@ -55,59 +47,34 @@ class DepartmentsController extends Controller
     public function store(DepartmentsStoreRequest $request) {
         $department = Department::create($request->only('title'));
 
-        if ($department) {
-            return response()->json(compact('department'), 200);
-        }
-        
-        return response()->json('Department not created!', 404);
+        return response()->json(['department' => new DepartmentResource($department)], 201);
     }
 
     /**
-     * Update a specific department
+     * Update a department
      *
-     * @param DepartmentsUpdateRequest $request
-     * @param int                $id
+     * @param Department    $department
+     * @param UpdateRequest $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse]
      */
-    public function update(DepartmentsUpdateRequest $request, $id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $department = Department::find($id);
+    public function update(Department $department, UpdateRequest $request) {
+        $department->update($request->only('title'));
 
-            if ($department) {
-                $department->update($request->only('title'));
-
-                return response()->json(compact('department'), 200);
-            }
-        }
-
-        return response()->json('Department not found, unable to be updated!', 404);
+        return response()->json(null, 204);
     }
 
     /**
-     * Delete a specific department
+     * Delete a department
      *
-     * @param int $id
+     * @param Department $department
      *
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
      */
-    public function destroy($id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $department = Department::find($id);
+    public function destroy(Department $department) {
+        $department->delete();
 
-            if ($department) {
-                $department->delete();
-            
-                return response()->json('Department deleted!', 200);
-            }
-        }
-        
-        return response()->json('Department not found, unable to be deleted!', 404);
+        return response()->json(null, 204);
     }
 
     /**
@@ -127,7 +94,9 @@ class DepartmentsController extends Controller
             $department = Department::find((int)$request->department_id);
 
             if ($user && $department) {
-                $user->update(['manager_at_department_id' => (int)$department->id, 'department_id' => (int)$department->id]);
+                $user->update(['department_id' => (int)$department->id]);
+
+                $department->update(['manager_id' => (int)$user->id]);
 
                 return response()->json(compact('user'), 200);
             }

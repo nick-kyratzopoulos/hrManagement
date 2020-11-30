@@ -21,7 +21,7 @@ class UsersSkillsController extends Controller
             $user = User::with('skills')->find($id);
 
             if ($user) {
-                return response()->json(['user' => $user, 'skills' => $user->skills], 200);
+                return response()->json(['user' => $user], 200);
             }
         }
 

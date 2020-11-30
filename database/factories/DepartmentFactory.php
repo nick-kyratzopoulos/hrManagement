@@ -24,7 +24,6 @@ class DepartmentFactory extends Factory
     {
         return [
             'title'      => $this->faker->unique()->words(3, true),
-            'manager_id' => null,
         ];
     }
 }

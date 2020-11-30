@@ -2,6 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -31,10 +34,37 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
-    {
+    public function register() {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (Throwable $e, $request) {
+            if ($request->is('api/*')) {
+                if ($e instanceof NotFoundHttpException) {
+                    return response()->json([
+                        'message' => 'Model not found',
+                        'original_error_message' => $e->getMessage(),
+                    ], 404);
+                }
+
+                if ($e instanceof ValidationException) {
+                    return response()->json([
+                        'message' => 'Validation failed',
+                        'errors' => $e->errors()
+                    ], 400);
+                }
+
+                if ($e instanceof SkillNotFoundException) {
+                    return response()->json([
+                        'message' => $e->getMessage()
+                    ], 500);
+                }
+
+                return response()->json([
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
         });
     }
 }

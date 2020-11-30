@@ -18,9 +18,19 @@ class SkillsController extends Controller
      */
     public function index() {
         $skills = SkillResource::collection(Skill::all());
-        $count = count($skills);
 
-        return response()->json(compact('skills', 'count'), 200);
+        return response()->json(compact('skills'), 200);
+    }
+
+    /**
+     * Return a skill's details
+     *
+     * @param Skill $skill
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Skill $skill) {
+        return response()->json(['skill' => new SkillResource($skill)], 200);
     }
 
     /**
@@ -33,79 +43,34 @@ class SkillsController extends Controller
     public function store(SkillsStoreRequest $request) {
         $skill = Skill::create($request->only('title'));
 
-        if ($skill) {
-            return response()->json(compact('skill'), 200);
-        }
-        
-        return response()->json('Skill not created!', 404);
-    }
-
-    /**
-     * Get a single skill
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $skill = Skill::find($id);
-
-            if ($skill) {
-                return response()->json(compact('skill'), 200);
-            }
-        }
-
-        return response()->json('Skill not found!', 404);
+        return response()->json(['skill' => new SkillResource($skill)], 201);
     }
 
     /**
      * Update a specific skill
      *
      * @param SkillsUpdateRequest $request
-     * @param int                $id
+     * @param Skill         $skill
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(SkillsUpdateRequest $request, $id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $skill = Skill::find($id);
+    public function update(SkillsUpdateRequest $request, Skill $skill) {
+        $skill->update($request->only('title'));
 
-            if ($skill) {
-                $skill->update($request->only('title'));
-
-                return response()->json(compact('skill'), 200);
-            }
-        }
-
-        return response()->json('Skill not found, unable to be updated!', 404);
+        return response()->json(null, 204);
     }
 
     /**
-     * Delete a specific skill
+     * Delete a specific user
      *
-     * @param int $id
+     * @param Skill $skill
      *
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function destroy($id) {
-        $id = (int)$id;
-        
-        if ($id > 0) {
-            $skill = Skill::find($id);
+    public function destroy(Skill $skill) {
+        $skill->delete();
 
-            if ($skill) {
-                $skill->delete();
-            
-                return response()->json('Skill deleted!', 200);
-            }
-        }
-        
-        return response()->json('Skill not found, unable to be deleted!', 404);
+        return response()->json(null, 204);
     }
 }

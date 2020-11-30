@@ -16,11 +16,10 @@ class VacationsSeeder extends Seeder
     public function run()
     {
         $vacations = Vacation::factory()->times(20)->create();
-
-        $users = User::all();
+        $users     = User::all();
 
         $vacations->each(function($vacation) use ($users) {
-            $id = $users->random(1)->id;
+            $id = $users->random(1)->pluck('id')[0];
 
             $vacation->update(['user_id' => (int)$id]);
         });

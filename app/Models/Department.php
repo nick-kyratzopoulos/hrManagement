@@ -17,9 +17,14 @@ class Department extends Model
      */
     protected $fillable = [
         'title',
+        'manager_id',
     ];
 
     public function users() {
         return $this->hasMany(User::class);
+    }
+
+    public function manager() {
+        return $this->belongsTo(User::class, 'manager_id');
     }
 }

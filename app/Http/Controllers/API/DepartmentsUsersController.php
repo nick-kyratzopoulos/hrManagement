@@ -48,7 +48,11 @@ class DepartmentsUsersController extends Controller
 
         if ($users && $department) {
             foreach ($users as $user) {
-                $user->update(['manager_at_department_id' => null, 'department_id' => null]);
+                $user->update(['department_id' => null]);
+
+                if ((int)$user->id === (int)$department->manager_id) {
+                    $department->update(['manager_id' => null]);
+                }
             }
 
             return response()->json(compact('users'), 200);
@@ -75,8 +79,10 @@ class DepartmentsUsersController extends Controller
                 $users = $department->users;
 
                 foreach ($users as $user) {
-                    $user->update(['manager_at_department_id' => null, 'department_id' => null]);
+                    $user->update(['department_id' => null]);
                 }
+
+                $department->update(['manager_id' => null]);
 
                 return response()->json('All users removed from department.', 200);
             }

@@ -24,7 +24,7 @@ class DepartmentsManagersUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'department_id' => 'required|unique:users,manager_at_department_id|integer',
+            'department_id' => 'required|unique:departments,manager_id|integer',
         ];
     }
 }
